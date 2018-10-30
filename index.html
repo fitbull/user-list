@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+        <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">        
+        <title>Avanade | User List</title>
+    </head>
+    <body class="lg:font-thin sm:font-light text-grey-darker font-sans min-h-screen">
+        <div id="app" style="background: linear-gradient(to bottom, #F8FAFC, #F9ACAA); min-height: 100vh">
+        <div class="flex justify-center items-center fade-in">
+                <div class="lg:w-1/2 sm:w-full container py-8 px-8">
+                    <div class="py-16 text-center lg:text-2xl">
+                        Avanade Technical Test
+                    </div>
+                    <div class="flex flex-wrap sm:px-8 lg:px-4 text-center">
+                        <div class="w-full lg:px-2 sm:px-4 py-2">
+                            <div v-for="user in pagination.data" class="flex flex-wrap mb-8 bg-white lg:h-24 rounded-lg fade-in">
+                                <div class="lg:w-24 sm:w-full flex items-center justify-center overflow-hidden rounded-l-lg">
+                                    <img v-lazy="user.avatar" class="lg:h-24 lg:w-24">
+                                </div>
+                                <div class="flex-1 px-4 py-4 text-left flex flex-wrap">
+                                    <div class="flex-1 truncate font-sans lg:font-thin sm:font-light text-grey-darker lg:text-base sm:text-4xl flex items-center px-4">
+                                        <svg class="svg-icon" viewBox="0 0 20 20">
+                                            <path d="M12.075,10.812c1.358-0.853,2.242-2.507,2.242-4.037c0-2.181-1.795-4.618-4.198-4.618S5.921,4.594,5.921,6.775c0,1.53,0.884,3.185,2.242,4.037c-3.222,0.865-5.6,3.807-5.6,7.298c0,0.23,0.189,0.42,0.42,0.42h14.273c0.23,0,0.42-0.189,0.42-0.42C17.676,14.619,15.297,11.677,12.075,10.812 M6.761,6.775c0-2.162,1.773-3.778,3.358-3.778s3.359,1.616,3.359,3.778c0,2.162-1.774,3.778-3.359,3.778S6.761,8.937,6.761,6.775 M3.415,17.69c0.218-3.51,3.142-6.297,6.704-6.297c3.562,0,6.486,2.787,6.705,6.297H3.415z"></path>
+                                        </svg> &nbsp;
+                                          {{ user.first_name }}, {{ user.last_name }}
+                                    </div>
+                                    <div class="relative">
+                                        <div class="text-right lg:text-xs rounded-lg shadow-lg bg-red-dark -mt-8 px-4 py-2 text-red-lightest">
+                                            # {{ user.id }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full font-sans lg:font-thin sm:font-light lg:text-xs sm:text-2xl mt-3 mb-3 text-red-dark">
+                                <div class="flex flex-wrap w-full">
+                                  <div class="lg:w-1/4 sm:w-full text-red-dark mt-2 px-2 flex flex-wrap">
+                                    <div class="tracking-wide font-normal">Show {{pagination.per_page}} of {{pagination.total}} </div>
+                                    <div class="px-2"><button v-if="loader" class="border-t-2 border-l-2 spin rounded-full border-grey-dark  lg:w-4 lg:h-4 sm:h-6 sm:w-6 ml-1"></button></div>
+                                    <br/><br/>
+                                  </div>
+                                  <div class="flex-1 text-red-dark flex justify-center">
+                                    <button @click="toPage(1)" class="border rounded-full border-red-dark  py-1 px-2 mr-1" :class="{ 'bg-red-dark text-red-lightest': currentPage === 1}">1</button>
+                                    <button @click="toPage(2)" class="border rounded-full border-red-dark  py-1 px-2 mr-1" :class="{ 'bg-red-dark text-red-lightest': currentPage === 2}">2</button>
+                                    <button @click="toPage(3)" class="border rounded-full border-red-dark  py-1 px-2 mr-1" :class="{ 'bg-red-dark text-red-lightest': currentPage === 3}">3</button>
+                                    <button @click="toPage(4)" class="border rounded-full border-red-dark  py-1 px-2 mr-1" :class="{ 'bg-red-dark text-red-lightest': currentPage === 4}">4</button>
+                                  </div>
+                                  <div class="w-1/4 text-right text-base">
+                                    <button @click="prevPage" :disabled="currentPage < 2">
+                                      <svg class="svg-icon2" viewBox="0 0 20 20">
+                                          <path d="M11.739,13.962c-0.087,0.086-0.199,0.131-0.312,0.131c-0.112,0-0.226-0.045-0.312-0.131l-3.738-3.736c-0.173-0.173-0.173-0.454,0-0.626l3.559-3.562c0.173-0.175,0.454-0.173,0.626,0c0.173,0.172,0.173,0.451,0,0.624l-3.248,3.25l3.425,3.426C11.911,13.511,11.911,13.789,11.739,13.962 M18.406,10c0,4.644-3.763,8.406-8.406,8.406S1.594,14.644,1.594,10S5.356,1.594,10,1.594S18.406,5.356,18.406,10 M17.521,10c0-4.148-3.373-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.148,3.374,7.521,7.521,7.521C14.147,17.521,17.521,14.148,17.521,10"></path>
+                                        </svg>
+                                    </button>
+                                    <button @click="nextPage"  :disabled="currentPage > 3">
+                                      <svg class="svg-icon2" viewBox="0 0 20 20">
+                                          <path d="M12.522,10.4l-3.559,3.562c-0.172,0.173-0.451,0.176-0.625,0c-0.173-0.173-0.173-0.451,0-0.624l3.248-3.25L8.161,6.662c-0.173-0.173-0.173-0.452,0-0.624c0.172-0.175,0.451-0.175,0.624,0l3.738,3.736C12.695,9.947,12.695,10.228,12.522,10.4 M18.406,10c0,4.644-3.764,8.406-8.406,8.406c-4.644,0-8.406-3.763-8.406-8.406S5.356,1.594,10,1.594C14.643,1.594,18.406,5.356,18.406,10M17.521,10c0-4.148-3.374-7.521-7.521-7.521c-4.148,0-7.521,3.374-7.521,7.521c0,4.147,3.374,7.521,7.521,7.521C14.147,17.521,17.521,14.147,17.521,10"></path>
+                                        </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            <!-- <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                                <img src="https://s3.amazonaws.com/uifaces/faces/twitter/russoedu/128.jpg" class="w-full">
+                                <div class="lg:h-12 sm:h-24 w-full bg-grey-lighter border-lg-bottom flex">
+                                    <button class="text-grey-dark w-full h-full hover:bg-grey-light border-lg-bottom">PAY</button>
+                                </div>
+                            </div> -->
+                        </div>          
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.js"></script>
+    <script src="https://unpkg.com/vue@2.5.13/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                  pagination: [],
+                  currentPage: 1,
+                  loader: false
+                }
+            },
+            mounted() {
+                axios.get('https://reqres.in/api/users?page=1')
+                .then(response => {
+                    this.pagination = response.data
+               })
+                .catch(error => {
+                    this.$toasted.show('Request Unavailable..')
+                })
+            },
+            methods: {
+                toPage(data) {
+                    this.loader = true
+                    this.pagination.data = []
+                    axios.get('https://reqres.in/api/users?page=' + data)
+                    .then(response => {
+                    this.pagination = response.data
+                    this.loader = false
+                    this.currentPage = data
+                   })
+                    .catch(error => {
+                        axios.get('https://reqres.in/api/users?page=' + this.currentPage)
+                        .then(response => {
+                            this.pagination = response.data
+                            this.loader = false
+                           })
+                        .catch(error => {
+                            this.$toasted.show('Request Unavailable..')
+                            this.loader = false
+                        })
+                    })
+                },
+                nextPage() {
+                    this.loader = true
+                    this.pagination.data = []
+                    axios.get('https://reqres.in/api/users?page=' + (this.currentPage + 1))
+                    .then(response => {
+                    this.pagination = response.data
+                    this.loader = false
+                    this.currentPage = this.currentPage + 1
+                   })
+                    .catch(error => {
+                        axios.get('https://reqres.in/api/users?page=' + this.currentPage)
+                        .then(response => {
+                            this.pagination = response.data
+                            this.loader = false
+                           })
+                        .catch(error => {
+                            this.$toasted.show('Request Unavailable..')
+                            this.loader = false
+                        })
+                    })
+                },
+                prevPage(data) {
+                    this.loader = true
+                    this.pagination.data = []
+                    axios.get('https://reqres.in/api/users?page=' + (this.currentPage - 1))
+                    .then(response => {
+                    this.pagination = response.data
+                    this.loader = false
+                    this.currentPage = this.currentPage - 1
+                   })
+                    .catch(error => {
+                        axios.get('https://reqres.in/api/users?page=' + this.currentPage)
+                        .then(response => {
+                            this.pagination = response.data
+                            this.loader = false
+                           })
+                        .catch(error => {
+                            this.$toasted.show('Request Unavailable..')
+                            this.loader = false
+                        })
+                    })
+                }
+            }
+        })
+    </script>
+    <script src="https://unpkg.com/vue-toasted"></script>
+    <script>
+        Vue.use(Toasted)
+    </script>
+    <script src="https://unpkg.com/vue-lazyload/vue-lazyload.js"></script>
+    <script>
+      Vue.use(VueLazyload)
+    </script>
+    </body>
+</html>

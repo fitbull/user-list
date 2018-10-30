@@ -1,0 +1,52 @@
+.rounded-l-lg {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem;
+}
+.svg-icon {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+  fill: #606F7B;
+}
+
+.svg-icon circle {
+  stroke: #606F7B;
+  stroke-width: 1;
+}
+.svg-icon2 {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+.svg-icon2 path,
+.svg-icon2 polygon,
+.svg-icon2 rect {
+  fill: #CC1F1A;
+}
+
+.svg-icon2 circle {
+  stroke: #CC1F1A;
+  stroke-width: 1;
+}
+
+.fade-in {
+    -webkit-animation-name: fade-in; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1.5s; /* Safari 4.0 - 8.0 */
+    animation-name: fade-in;
+    animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade-in {
+    0%   {opacity: 0; margin-top: 100px;}
+    100%  {opacity: 1; margin-top: 0px;}
+   }
+
+/* Standard syntax */
+@keyframes fade-in {
+     0%   {opacity: 0; margin-top: 100px;}
+    100%  {opacity: 1; margin-top: 0px;}
+}
